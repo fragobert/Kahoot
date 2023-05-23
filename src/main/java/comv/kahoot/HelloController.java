@@ -12,7 +12,4 @@ public class HelloController {
         welcomeText.setText("Welcome to JavaFX Application!");
     }
 
-    /*public static initialize() {
-
-    }*/
 }

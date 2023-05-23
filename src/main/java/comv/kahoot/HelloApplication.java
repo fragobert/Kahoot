@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,17 +23,19 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
 
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("question_window.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+        FXMLLoader question_window = new FXMLLoader(getClass().getResource("question_window.fxml"));
+        FXMLLoader answer_window = new FXMLLoader(getClass().getResource("answer_window.fxml"));
+        Pane pane = question_window.load();
+        Scene scene = new Scene(pane, 600, 400);
         stage.setFullScreen(true);
         stage.setTitle("Hello!");
         stage.setScene(scene);
 
         // Ereignisbehandlung für die Knöpfe
-        Button answerButton1 = (Button) scene.lookup("#answerButton1");
-        Button answerButton2 = (Button) scene.lookup("#answerButton2");
-        Button answerButton3 = (Button) scene.lookup("#answerButton3");
-        Button answerButton4 = (Button) scene.lookup("#answerButton4");
+        Button answerButton1 = (Button) answer_window.getNamespace().get("answerButton1");
+        Button answerButton2 = (Button) answer_window.getNamespace().get("answerButton2");
+        Button answerButton3 = (Button) answer_window.getNamespace().get("answerButton3");
+        Button answerButton4 = (Button) answer_window.getNamespace().get("answerButton4");
 
         answerButton1.setOnAction(event -> openAnswerWindow());
         answerButton2.setOnAction(event -> openAnswerWindow());
@@ -53,8 +56,9 @@ public class HelloApplication extends Application {
         try {
             if (answerWindow == null) {
                 answerWindow = new Stage();
-                FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("answer_window.fxml"));
-                Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("answer_window.fxml"));
+                Pane pane = fxmlLoader.load();
+                Scene scene = new Scene(pane, 600, 400);
                 answerWindow.setScene(scene);
                 answerWindow.setTitle("Answer");
                 answerWindow.setOnCloseRequest(event -> answerWindow = null);
