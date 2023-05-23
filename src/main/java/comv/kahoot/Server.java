@@ -1,4 +1,5 @@
-<<<<<<< HEAD
+package comv.kahoot;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
