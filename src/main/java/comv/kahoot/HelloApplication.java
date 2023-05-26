@@ -21,6 +21,10 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        // To test server
+        Server server = new Server("Kahoot GmbH", 6000);
+        server.startup();
+
         primaryStage = stage;
 
         FXMLLoader question_window = new FXMLLoader(getClass().getResource("question_window.fxml"));
