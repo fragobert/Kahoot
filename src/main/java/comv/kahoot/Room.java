@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class Room {
-    private static final Set<Room> runningRooms = new HashSet<>();
+    private static final HashMap<String, Room> runningRooms = new HashMap<>();
 
     private String id;
 
@@ -38,8 +38,12 @@ public class Room {
         playerSockets.put(username, hostSocket);
 
         synchronized (runningRooms) {
-            runningRooms.add(this);
+            runningRooms.put(id, this);
         }
+    }
+
+    protected static Room getRoom(String id){
+        return runningRooms.get(id);
     }
 
     private String generateUniqueID() throws IllegalStateException {
@@ -53,7 +57,7 @@ public class Room {
             id = String.format("%04d", new Random().nextInt(9999) + 1);
             unique = true;
 
-            for(Room room : runningRooms)
+            for(Room room : runningRooms.values())
                 if (room.id.equals(id)) {
                     unique = false;
                     break;
@@ -63,22 +67,22 @@ public class Room {
         return id;
     }
 
-    private void checkUsername(String username) throws IllegalArgumentException {
+    protected static void checkUsername(String username) throws IllegalArgumentException {
         if(username.length() < 5 || username.length() > 20 || username.contains(";"))
             throw new IllegalArgumentException("h00000");
     }
 
-    private void host() throws IOException {
+    protected void host() throws IOException {
         String packet = "h" + id;
         hostSender.writeUTF(packet);
         Server.log("Sent package: " + packet);
-
-        while(playerSockets.size() <= 50){
-
-        }
     }
 
+    protected void join(Socket userSocket, DataOutputStream sender, DataInputStream receiver, String username) throws IOException {
 
+    }
+
+    /*
 
     protected class ListeningThread implements Runnable {
         public void run() {
@@ -135,5 +139,5 @@ public class Room {
                 }
             }
         }
-    }
+    }*/
 }

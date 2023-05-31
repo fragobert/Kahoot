@@ -178,6 +178,22 @@ public class Server {
                             break;
 
                         case 'j':
+                            String id = args.substring(0, 4);
+                            String username = args.substring(4);
+                            try {
+                                Room.checkUsername(username);
+                            } catch (IllegalArgumentException invUsername){
+                                sender.writeUTF("efailureInvalid username!");
+                                break;
+                            }
+
+                            Room room = Room.getRoom(id);
+                            if(room == null){
+                                sender.writeUTF("efailureInvalid Room ID!");
+                                break;
+                            }
+
+                            room.join(userSocket, sender, receiver, username);
                             break;
 
                         default:
