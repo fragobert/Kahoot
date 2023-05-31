@@ -5,67 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.*;
-/*
-public class Server {
-	
-	private static void calculateScore(User user, Question question, Answer answer) {
-		if(CompareArrays.compareArray(question.getIndex(), answer.getIndex())) {
-			Duration duration = Duration.between(question.getStartTime(), answer.getEndtime());
-			if(question.getIndex().length == 1) {
-				user.setScore(user.getScore() + (int)(1000 * (1 - ((duration.getSeconds() / question.getMaxSeconds()) / 2))));
-			}else{
-				user.setScore(user.getScore() + (int)((500 * question.getIndex().length) * (1 - (((double)duration.getSeconds() / question.getMaxSeconds()) / 2))));
-				System.out.println(question.getMaxSeconds());
-			}
-		}		
-	}
-	
-	/*
-
-	public static void main(String[] args) {
-		User user = new User(0, 0);
-		String[] answers = {"a", "b", "c", "d"};
-		int[] indexQ = {1, 2, 3};
-		LocalDateTime startTime = LocalDateTime.now();
-		System.out.println(startTime.getSecond());
-		Question question = new Question("Was ist richtig?", answers, 30, indexQ, startTime);
-		try {
-			Thread.sleep(20000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		int[] indexA = {1, 2, 3};
-		LocalDateTime endTime = LocalDateTime.now();
-		System.out.println(endTime.getSecond());
-		Answer answer = new Answer(indexA, endTime);
-		
-		calculateScore(user, question, answer);
-		
-		System.out.println(user.getScore());
-	}
-
-
-=====
-package comv.kahoot;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.*;
-
-*/
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.*;
+import java.util.regex.Pattern;
 /*
 public class Server {
 
@@ -143,8 +84,9 @@ public class Server {
 
             // Always accept new connections and cre
             while(true){
-                Thread connection = new Thread(new Connection(serverSocket.accept()));
-                System.out.println("New client connection: " + serverSocket.getInetAddress());
+                Socket socket = serverSocket.accept();
+                Thread connection = new Thread(new Connection(socket));
+                log("New client connection: " + socket.getInetAddress());
                 connection.start();
             }
 
@@ -166,7 +108,7 @@ public class Server {
 
                 switch(cmd){
                     case "stop":
-                        System.out.println("Are you sure you want to stop the server?\nThis will close all running games! (y/n)");
+                        terminal("Are you sure you want to stop the server?\nThis will close all running games! (y/n)");
                         String answer = sc.nextLine();
                         if(answer.equals("y")) {
                             shutdown = true;
@@ -179,12 +121,12 @@ public class Server {
             }
             try {
                 threads.forEach(Thread::interrupt);
-                System.out.println("All threads stopped!");
+                terminal("All threads stopped!");
             } catch (SecurityException e){
                 System.err.println("Failed to stop all threads!");
             }
 
-            System.out.println("Closing server...");
+            terminal("Closing server...");
             System.exit(0);
         }
     }
@@ -213,6 +155,7 @@ public class Server {
             // When Client connects successfully, it should send server a message with its next action (host or join)
             try {
                 String answer = receiver.readUTF();
+                log("Received package: " + answer + " (" + userSocket.getInetAddress() + ")");
                 char action = answer.charAt(0);
                 String args = answer.substring(1);
 
@@ -222,6 +165,7 @@ public class Server {
                             // Host a new room
                             try {
                                 Room room = new Room(userSocket, receiver, sender, args);
+                                log("Room created for: " + userSocket.getInetAddress());
                                 room.host();
                             } catch (IllegalArgumentException invUsername){
                                 sender.writeUTF("00000");
@@ -247,67 +191,16 @@ public class Server {
         }
 
         private void criticalException(String message){
-            System.out.println(message);
+            log("Critical Exception: " + message);
             Thread.currentThread().interrupt();
         }
     }
 
+    protected static void log(String msg){
+        System.out.println("[LOG] " + msg);
+    }
 
-    // Ignore for now
-    private class Room {
-
-        private static int totalRoomsCreated = 0;
-        private static final Set<Room> runningRooms = new HashSet<>();
-
-        private final String id;
-
-        // player name + socket
-        private final Map<String, Socket> playerSockets = new HashMap<>();
-        private final Socket hostSocket;
-        private final DataInputStream receiver;
-        private final DataOutputStream sender;
-
-        protected Room(Socket hostSocket, DataInputStream receiver, DataOutputStream sender, String username) throws IllegalStateException, IllegalArgumentException {
-            this.id = generateUniqueID();   // throws IllegalStateException if too many rooms
-            checkUsername(username);        // throws IllegalArgumentException if too short, long or ';' contained
-
-            this.hostSocket = hostSocket; this.receiver = receiver; this.sender = sender;
-
-            playerSockets.put(username, hostSocket);
-
-            synchronized (runningRooms) {
-                runningRooms.add(this);
-            }
-        }
-
-        private String generateUniqueID() throws IllegalStateException {
-            String id = null;
-            boolean unique = false;
-
-            while(!unique){
-                if(runningRooms.size() > 7500)
-                    throw new IllegalStateException("Too many running rooms!");
-
-                id = String.format("%04d", new Random().nextInt(9999) + 1);
-                unique = true;
-
-                for(Room room : runningRooms)
-                    if (room.id.equals(id)) {
-                        unique = false;
-                        break;
-                    }
-            }
-
-            return id;
-        }
-
-        private void checkUsername(String username) throws IllegalArgumentException {
-            if(username.length() < 5 || username.length() > 20 || username.contains(";"))
-                throw new IllegalArgumentException("Invalid username");
-        }
-
-        private void host(){
-
-        }
+    protected static void terminal(String msg){
+        System.out.println("[Terminal] " + msg);
     }
 }
