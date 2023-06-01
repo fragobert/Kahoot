@@ -1,5 +1,7 @@
 package comv.kahoot;
 
+import javafx.scene.chart.PieChart;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,12 +15,17 @@ public class Room {
     private String id;
 
     // player name + socket
-    private final Map<String, Socket> playerSockets = new HashMap<>();
-    private final Set<DataInputStream> receivers = new HashSet<>();
-    private final Set<DataOutputStream> senders = new HashSet<>();
+    private final Map<String, Socket> userSockets = new HashMap<>();
+
+    // Updates the inputs received from socket for the username key
+    private final Map<String, String> received = new HashMap<>();
+
+    private final Set<DataOutputStream> writers = new HashSet<>();
+
     private final Socket hostSocket;
     private final DataInputStream hostReceiver;
     private final DataOutputStream hostSender;
+    protected String state = "j";
 
     protected Room(Socket hostSocket, DataInputStream hostReceiver, DataOutputStream hostSender, String username) throws IllegalStateException, IllegalArgumentException, IOException {
         try {
@@ -35,7 +42,7 @@ public class Room {
 
         this.hostSocket = hostSocket; this.hostReceiver = hostReceiver; this.hostSender = hostSender;
 
-        playerSockets.put(username, hostSocket);
+        userSockets.put(username, hostSocket);
 
         synchronized (runningRooms) {
             runningRooms.put(id, this);
@@ -78,66 +85,39 @@ public class Room {
         Server.log("Sent package: " + packet);
     }
 
-    protected void join(Socket userSocket, DataOutputStream sender, DataInputStream receiver, String username) throws IOException {
+    protected void join(Socket userSocket, DataOutputStream sender, DataInputStream receiver, String username) throws IOException, InterruptedException {
+        userSockets.put(username, userSocket);
+
+        Thread listener = new Thread(new ListeningThread(receiver, username));
+        Server.threads.add(listener);
+        listener.start();
+
+        writers.add(sender);
+        listener.start();
+        writer.start();
+
+        recei.join();
+    }
+
+    protected void start(){
 
     }
 
-    /*
+    private class ListeningThread implements Runnable {
+        private final String username;
 
-    protected class ListeningThread implements Runnable {
+
+        final DataInputStream listener;
+        public ListeningThread(DataInputStream listener, String username){
+            this.listener = listener;
+            this.username = username;
+        }
+
         public void run() {
             while(true){
-                try {
-                    String msg = in.readUTF();
+                received.put(username, listener.readUTF())
 
-                    if(msg.startsWith(PREFIX)) {
-                        if(msg.equals(PREFIX + "exit")) {
-                            System.out.println("Chat partner closed connection!");
-                            stop = true;
-                            return;
-                        }
-                    } else {
-                        System.out.println(msg);
-                    }
-                } catch (IOException e) {
-                    if(stop) return;
-
-                    System.out.println("Error reading from other end: " + e.getMessage());
-                    return;
-                }
             }
         }
     }
-
-    protected class WritingThread implements Runnable {
-
-        public void run() {
-            while(true){
-                try {
-                    String msg = writingScanner.nextLine();
-
-                    if(msg.startsWith(PREFIX)) {
-                        out.writeUTF(msg);
-
-                        if(msg.equals(PREFIX + "exit")) {
-                            System.out.println("Closing connection...");
-                            stop = true;
-                            return;
-                        }
-                        else {
-                            System.err.println("Unknown command: " + msg);
-                        }
-                    } else if(!msg.isBlank()) {
-                        out.writeUTF("(" + type + ") " + name + ": " + msg);
-                        out.flush();
-                    }
-                } catch (IOException e) {
-                    System.out.println("Error writing to other end: " + e.getMessage());
-                    return;
-                } catch (IllegalStateException e) {
-                    return;
-                }
-            }
-        }
-    }*/
 }

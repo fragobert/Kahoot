@@ -64,7 +64,7 @@ import java.util.*;
  */
 public class Server {
     private final ServerSocket serverSocket;
-    private final static Set<Thread> threads = new HashSet<>();
+    protected final static Set<Thread> threads = new HashSet<>();
     private final String name;
 
     public Server(String name, int port) throws IOException {
@@ -201,7 +201,7 @@ public class Server {
                             break;
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 criticalException("Disconnected! (" + userSocket.getInetAddress() + ", " + e.getMessage() + ")");
             }
         }
