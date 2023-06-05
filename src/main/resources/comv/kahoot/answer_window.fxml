@@ -13,7 +13,7 @@
             <font>
                 <Font size="36.0" />
             </font></TextArea>
-        <Button layoutX="971.0" layoutY="570.0" mnemonicParsing="false" prefHeight="200.0" prefWidth="900.0" text="Answer 2" fx:id="answerbutton1">
+        <Button fx:id="answerButton1" layoutX="44.0" layoutY="570.0" mnemonicParsing="false" prefHeight="200.0" prefWidth="900.0" text="Answer 1">
             <effect>
                 <Lighting bumpInput="$null" diffuseConstant="2.0" specularConstant="2.0" specularExponent="40.0" surfaceScale="0.0">
                     <light>
@@ -28,7 +28,7 @@
             <cursor>
                 <Cursor fx:constant="HAND" />
             </cursor></Button>
-        <Button layoutX="44.0" layoutY="570.0" mnemonicParsing="false" prefHeight="200.0" prefWidth="900.0" text="Answer 1" fx:id="answerbutton2">
+        <Button fx:id="answerButton2" layoutX="971.0" layoutY="570.0" mnemonicParsing="false" prefHeight="200.0" prefWidth="900.0" text="Answer 2">
             <effect>
                 <Lighting bumpInput="$null" diffuseConstant="2.0" specularConstant="2.0" specularExponent="40.0" surfaceScale="0.0">
                     <contentInput>
@@ -46,7 +46,7 @@
             <cursor>
                 <Cursor fx:constant="HAND" />
             </cursor></Button>
-        <Button layoutX="44.0" layoutY="829.0" mnemonicParsing="false" prefHeight="200.0" prefWidth="900.0" text="Answer 3" fx:id="answerbutton3">
+        <Button fx:id="answerButton3" layoutX="44.0" layoutY="829.0" mnemonicParsing="false" prefHeight="200.0" prefWidth="900.0" text="Answer 3">
             <effect>
                 <Lighting diffuseConstant="2.0" specularConstant="2.0" specularExponent="40.0" surfaceScale="0.0">
                     <bumpInput>
@@ -64,7 +64,7 @@
             <cursor>
                 <Cursor fx:constant="HAND" />
             </cursor></Button>
-        <Button layoutX="971.0" layoutY="829.0" mnemonicParsing="false" prefHeight="200.0" prefWidth="900.0" text="Answer 4" fx:id="answerbutton4">
+        <Button fx:id="answerButton4" layoutX="971.0" layoutY="829.0" mnemonicParsing="false" prefHeight="200.0" prefWidth="900.0" text="Answer 4">
             <effect>
                 <Lighting diffuseConstant="2.0" specularConstant="2.0" specularExponent="40.0" surfaceScale="0.0">
                     <bumpInput>
@@ -82,10 +82,14 @@
             <cursor>
                 <Cursor fx:constant="HAND" />
             </cursor></Button>
-      <Text layoutX="118.0" layoutY="673.0" scaleX="7.0" scaleY="7.0" scaleZ="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="✓" visible="false" />
-      <Text layoutX="128.0" layoutY="935.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="✓" visible="false" />
-        <Text layoutX="1060.0" layoutY="935.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="✓" visible="false" />
-        <Text layoutX="1060.0" layoutY="673.0" scaleX="7.0" scaleY="7.0" scaleZ="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="✓" visible="false" />
+        <Text fx:id="correctAnswer1" layoutX="118.0" layoutY="673.0" scaleX="7.0" scaleY="7.0" scaleZ="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="✓" visible="false" />
+        <Text fx:id="correctAnswer3" layoutX="128.0" layoutY="935.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="✓" visible="false" />
+        <Text fx:id="correctAnswer4" layoutX="1060.0" layoutY="935.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="✓" visible="false" />
+        <Text fx:id="correctAnswer2" layoutX="1060.0" layoutY="673.0" scaleX="7.0" scaleY="7.0" scaleZ="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="✓" visible="false" />
+        <Text fx:id="chosenAnswer1" layoutX="833.0" layoutY="673.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔘" visible="false" />
+        <Text fx:id="chosenAnswer3" layoutX="833.0" layoutY="935.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔘" visible="false" />
+        <Text fx:id="chosenAnswer2" layoutX="1752.0" layoutY="673.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔘" visible="false" />
+        <Text fx:id="chosenAnswer4" layoutX="1752.0" layoutY="935.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔘" visible="false" />
 
     </children>
 </Pane>
