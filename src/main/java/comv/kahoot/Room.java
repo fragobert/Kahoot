@@ -8,24 +8,28 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
 import java.util.regex.Pattern;
+import comv.kahoot.User;
 
 public class Room {
+    // Room attributes
+    private String id;
     private static final HashMap<String, Room> runningRooms = new HashMap<>();
 
-    private String id;
-
-    // player name + socket
-    private final Map<String, Socket> userSockets = new HashMap<>();
-
-    // Updates the inputs received from socket for the username key
-    private final Map<String, String> received = new HashMap<>();
-
+    // User attributes
+    private final Map<User, Socket> userSockets = new HashMap<>();
+    private final Map<User, String> received = new HashMap<>();
+    private final Set<Thread> listeners = new HashSet<>();
     private final Set<DataOutputStream> writers = new HashSet<>();
 
     private final Socket hostSocket;
     private final DataInputStream hostReceiver;
     private final DataOutputStream hostSender;
-    protected String state = "j";
+
+    /**
+     * 0 = Not all users are ready (waiting)
+     * 1 =
+     */
+    protected RoomState state = RoomState.NOT_READY;
 
     protected Room(Socket hostSocket, DataInputStream hostReceiver, DataOutputStream hostSender, String username) throws IllegalStateException, IllegalArgumentException, IOException {
         try {
@@ -42,11 +46,13 @@ public class Room {
 
         this.hostSocket = hostSocket; this.hostReceiver = hostReceiver; this.hostSender = hostSender;
 
-        userSockets.put(username, hostSocket);
+        User host = new User(username, 0,0);
+        userSockets.put(host, hostSocket);
+        listeners.add(new Thread(new ListeningThread(hostReceiver, host)));
+        writers.add(hostSender);
 
-        synchronized (runningRooms) {
-            runningRooms.put(id, this);
-        }
+        runningRooms.put(id, this);
+
     }
 
     protected static Room getRoom(String id){
@@ -85,38 +91,49 @@ public class Room {
         Server.log("Sent package: " + packet);
     }
 
-    protected void join(Socket userSocket, DataOutputStream sender, DataInputStream receiver, String username) throws IOException, InterruptedException {
-        userSockets.put(username, userSocket);
+    protected void join(Socket userSocket, DataOutputStream writer, DataInputStream receiver, String username) throws IOException, InterruptedException {
+        User user = new User(username, 0, 0);
+        userSockets.put(user, userSocket);
 
-        Thread listener = new Thread(new ListeningThread(receiver, username));
+        Thread listener = new Thread(new ListeningThread(receiver, user));
         Server.threads.add(listener);
-        listener.start();
+        listeners.add(listener);
 
-        writers.add(sender);
-        listener.start();
-        writer.start();
-
-        recei.join();
+        writers.add(writer);
     }
 
-    protected void start(){
+    protected void start() throws InterruptedException {
+        boolean roomFinished = false;
 
+        while(!roomFinished) {
+            switch (state) {
+                case NOT_READY:
+
+                    for(Thread listener : listeners){
+                        listener.start();
+                        listener.join();
+                    }
+
+            }
+        }
+
+        runningRooms.remove(id);
     }
 
     private class ListeningThread implements Runnable {
-        private final String username;
-
-
+        private final User user;
         final DataInputStream listener;
-        public ListeningThread(DataInputStream listener, String username){
+
+        public ListeningThread(DataInputStream listener, User user){
             this.listener = listener;
-            this.username = username;
+            this.user = user;
         }
 
         public void run() {
-            while(true){
-                received.put(username, listener.readUTF())
-
+            try {
+                received.put(user, listener.readUTF());
+            } catch (IOException connectionLost) {
+                Thread.currentThread().interrupt();
             }
         }
     }

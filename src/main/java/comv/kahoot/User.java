@@ -1,3 +1,4 @@
+package comv.kahoot;
 
 public class User {
 	private int winningStreak, score;
