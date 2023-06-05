@@ -108,12 +108,24 @@ public class Room {
         while(!roomFinished) {
             switch (state) {
                 case NOT_READY:
-
                     for(Thread listener : listeners){
                         listener.start();
                         listener.join();
                     }
 
+                    for(String msg : received.values()){
+                        if(!msg.equals("r")){
+                            // Shit's not implemented
+                            return;
+                        }
+                    }
+
+                    state = RoomState.STARTING;
+                    break;
+
+
+                case STARTING:
+                    Server.log("Room started officially!!");
             }
         }
 
