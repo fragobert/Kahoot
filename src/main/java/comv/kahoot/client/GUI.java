@@ -1,4 +1,4 @@
-package comv.kahoot;
+package comv.kahoot.client;
 
 import javafx.application.Application;
 import javafx.fxml.FXML;
