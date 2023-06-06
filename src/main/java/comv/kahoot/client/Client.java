@@ -1,4 +1,4 @@
-package comv.kahoot.client;
+package comv.kahoot;
 
 import java.io.*;
 import java.net.Socket;
@@ -22,7 +22,19 @@ public class Client {
              BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))) {
 
             String username = readUsername();
-            out.writeUTF("h" + username);
+            char option = readOption();
+
+            switch(option) {
+                case 'h':
+                    out.writeUTF("h" + username);
+                    break;
+                case 'j':
+                    String roomNumber = readRoomNumber();
+                    out.writeUTF("j" + roomNumber + username);
+                    break;
+                default: System.out.println("Wrong Input"); break;
+            }
+
 
             Thread messageReaderThread = new Thread(() -> readServerResponse(in));
             messageReaderThread.start();
@@ -79,6 +91,66 @@ public class Client {
         return true;
     }
 
+    /**
+     * Reads the option from the user.
+     *
+     * @return the option entered by the user
+     * @throws IOException if an I/O error occurs while reading the input
+     */
+    private char readOption() throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String answer;
+        char option;
+        do {
+            System.out.println("Do you want to join or host?");
+            answer = reader.readLine();
+            option = answer.toLowerCase().charAt(0);
+        } while (!validateOption(option));
+        return option;
+    }
+
+    /**
+     * Validates the option for letter.
+     *
+     * @param option to validate
+     * @return true if the option is valid, false otherwise
+     */
+    private boolean validateOption(char option) {
+        if(option == 'j' || option == 'h') {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Reads the roomnumber from the user.
+     *
+     * @return the roomnumber entered by the user
+     * @throws IOException if an I/O error occurs while reading the input
+     */
+    private String readRoomNumber() throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String roomNumber;
+        do {
+            System.out.println("Enter your roomnumber");
+            roomNumber = reader.readLine();
+        } while (!validateRoomNumber(roomNumber));
+        return roomNumber;
+    }
+
+    /**
+     * Validates the roomnumber for length.
+     *
+     * @param roomNumber to validate
+     * @return true if the option is valid, false otherwise
+     */
+    private boolean validateRoomNumber(String roomNumber) {
+        if(roomNumber.length() == 4 && !roomNumber.equals("0000")) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Reads and displays server responses.
