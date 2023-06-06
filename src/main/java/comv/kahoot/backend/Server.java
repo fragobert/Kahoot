@@ -194,7 +194,8 @@ public class Server {
                             }
 
                             room.join(userSocket, sender, receiver, username);
-                            break;
+                            sender.writeUTF("esuccess");
+                            return;
 
                         default:
                             // ignore request

@@ -51,10 +51,6 @@ public class Room {
 
     }
 
-    protected static Room getRoom(String id){
-        return runningRooms.get(id);
-    }
-
     private String generateUniqueID() throws IllegalStateException {
         String id = null;
         boolean unique = false;
@@ -76,25 +72,19 @@ public class Room {
         return id;
     }
 
-    protected static void checkUsername(String username) throws IllegalArgumentException {
-        if(username.length() < 5 || username.length() > 20 || username.contains(";"))
-            throw new IllegalArgumentException("h00000");
-    }
-
     protected void host() throws IOException {
         String packet = "h" + id;
         hostSender.writeUTF(packet);
         Server.log("Sent package: " + packet);
     }
 
-    protected void join(Socket userSocket, DataOutputStream writer, DataInputStream receiver, String username) throws IOException, InterruptedException {
+    protected void join(Socket userSocket, DataOutputStream writer, DataInputStream receiver, String username) throws IOException {
         User user = new User(username, 0, 0);
         userSockets.put(user, userSocket);
 
         Thread listener = new Thread(new ListeningThread(receiver, user));
         Server.threads.add(listener);
         listeners.add(listener);
-
         writers.add(writer);
     }
 
@@ -127,6 +117,15 @@ public class Room {
         }
 
         runningRooms.remove(id);
+    }
+
+    protected static Room getRoom(String id){
+        return runningRooms.get(id);
+    }
+
+    protected static void checkUsername(String username) throws IllegalArgumentException {
+        if(username.length() < 5 || username.length() > 20 || username.contains(";"))
+            throw new IllegalArgumentException("h00000");
     }
 
     private class ListeningThread implements Runnable {
