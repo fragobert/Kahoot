@@ -1,4 +1,4 @@
-package comv.kahoot;
+package comv.kahoot.backend;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-import java.util.regex.Pattern;
 /*
 public class Server {
 
@@ -167,6 +166,7 @@ public class Server {
                                 Room room = new Room(userSocket, receiver, sender, args);
                                 log("Room created for: " + userSocket.getInetAddress());
                                 room.host();
+                                room.start();
                             } catch (IllegalArgumentException invUsername){
                                 sender.writeUTF("00000");
                                 break;
@@ -218,5 +218,15 @@ public class Server {
 
     protected static void terminal(String msg){
         System.out.println("[Terminal] " + msg);
+    }
+
+    public static void main(String[] args) {
+        try {
+            Server server = new Server("Kahoot Server", 6000);
+            server.startup();
+        } catch (IOException e) {
+            Server.terminal("Server crashed!");
+        }
+
     }
 }

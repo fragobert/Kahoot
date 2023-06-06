@@ -1,4 +1,4 @@
-package comv.kahoot;
+package comv.kahoot.client;
 
 import java.time.LocalDateTime;
 

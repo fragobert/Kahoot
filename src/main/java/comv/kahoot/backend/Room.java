@@ -1,6 +1,7 @@
-package comv.kahoot;
+package comv.kahoot.backend;
 
-import javafx.scene.chart.PieChart;
+import comv.kahoot.User;
+import comv.kahoot.quiz.Quiz;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,7 +9,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
 import java.util.regex.Pattern;
-import comv.kahoot.User;
 
 public class Room {
     // Room attributes
@@ -25,10 +25,6 @@ public class Room {
     private final DataInputStream hostReceiver;
     private final DataOutputStream hostSender;
 
-    /**
-     * 0 = Not all users are ready (waiting)
-     * 1 =
-     */
     protected RoomState state = RoomState.NOT_READY;
 
     protected Room(Socket hostSocket, DataInputStream hostReceiver, DataOutputStream hostSender, String username) throws IllegalStateException, IllegalArgumentException, IOException {
@@ -110,6 +106,8 @@ public class Room {
                 case NOT_READY:
                     for(Thread listener : listeners){
                         listener.start();
+                    }
+                    for(Thread listener : listeners){
                         listener.join();
                     }
 
@@ -120,12 +118,11 @@ public class Room {
                         }
                     }
 
-                    state = RoomState.STARTING;
+                    state = RoomState.RUNNING;
                     break;
 
-
-                case STARTING:
-                    Server.log("Room started officially!!");
+                case RUNNING:
+                    Quiz quiz = Quiz.loadQuiz();
             }
         }
 

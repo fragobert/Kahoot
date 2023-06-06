@@ -1,5 +1,6 @@
-package comv.kahoot;
+package comv.kahoot.client;
 
+import comv.kahoot.backend.Server;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
