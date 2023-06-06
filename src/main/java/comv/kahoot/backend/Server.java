@@ -192,13 +192,19 @@ public class Server {
                                 sender.writeUTF("efailureInvalid Room ID!");
                                 break;
                             }
+                            try{
+                                room.join(userSocket, sender, receiver, username);
+                            } catch (IllegalStateException roomRunning){
+                                sender.writeUTF("efailureRoom already started!");
+                                break;
+                            }
 
                             room.join(userSocket, sender, receiver, username);
                             sender.writeUTF("esuccess");
                             return;
 
                         default:
-                            // ignore request
+                            // ignores request
                             break;
                     }
                 }
