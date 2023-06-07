@@ -37,7 +37,7 @@ public class GUI extends Application {
 
                 FXMLLoader trueFalseWindowLoader = new FXMLLoader(getClass().getResource("true_false_window.fxml"));
                 questionPane = trueFalseWindowLoader.load();
-                Scene scene = new Scene(questionPane, 1600, 900);
+                Scene scene = new Scene(questionPane, 1366, 768);
                 primaryStage.setScene(scene);
                 primaryStage.setFullScreen(false);
 
@@ -74,7 +74,7 @@ public class GUI extends Application {
 
                 FXMLLoader questionWindowLoader = new FXMLLoader(getClass().getResource("question_window.fxml"));
                 questionPane = questionWindowLoader.load();
-                Scene scene = new Scene(questionPane, 1600, 900);
+                Scene scene = new Scene(questionPane, 1366, 768);
                 stage.setFullScreen(false);
                 stage.setTitle("Kayeet");
                 stage.setScene(scene);
@@ -143,7 +143,7 @@ public class GUI extends Application {
         try {
             FXMLLoader trueFalseAnswerWindowLoader = new FXMLLoader(getClass().getResource("true_false_window_answer.fxml"));
             answerPane = trueFalseAnswerWindowLoader.load();
-            Scene scene = new Scene(answerPane, 1600, 900);
+            Scene scene = new Scene(answerPane, 1366, 768);
             primaryStage.setScene(scene);
             primaryStage.setFullScreen(false);
 
@@ -175,7 +175,7 @@ public class GUI extends Application {
         try {
             FXMLLoader answerWindowLoader = new FXMLLoader(getClass().getResource("answer_window.fxml"));
             answerPane = answerWindowLoader.load();
-            Scene scene = new Scene(answerPane, 1600, 900);
+            Scene scene = new Scene(answerPane, 1366, 768);
             primaryStage.setScene(scene);
             primaryStage.setFullScreen(false);
 

@@ -6,13 +6,13 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="900" maxWidth="1600" minHeight="900" minWidth="1600" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="768" maxWidth="1366" minHeight="768" minWidth="1366" prefHeight="768" prefWidth="1366" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextArea fx:id="textArea" layoutX="60.0" layoutY="53.0" prefHeight="400.0" prefWidth="1480.0" text="Question">
+      <TextArea fx:id="textArea" layoutX="60.0" layoutY="53.0" prefHeight="400.0" prefWidth="1244.0" text="Question">
          <font>
             <Font size="36.0" />
          </font></TextArea>
-      <Button fx:id="trueButton" layoutX="60.0" layoutY="587.0" mnemonicParsing="false" prefHeight="233.0" prefWidth="700.0" text="True">
+      <Button fx:id="trueButton" layoutX="60.0" layoutY="493.0" mnemonicParsing="false" prefHeight="233.0" prefWidth="600.0" text="True">
          <effect>
             <Lighting diffuseConstant="2.0" specularConstant="2.0" specularExponent="40.0" surfaceScale="0.0">
                <bumpInput>
@@ -30,7 +30,7 @@
          <font>
             <Font name="Microsoft Himalaya" size="96.0" />
          </font></Button>
-      <Button fx:id="falseButton" layoutX="840.0" layoutY="587.0" mnemonicParsing="false" prefHeight="233.0" prefWidth="700.0" text="False">
+      <Button fx:id="falseButton" layoutX="704.0" layoutY="493.0" mnemonicParsing="false" prefHeight="233.0" prefWidth="600.0" text="False">
          <effect>
             <Lighting diffuseConstant="2.0" specularConstant="2.0" specularExponent="40.0" surfaceScale="0.0">
                <bumpInput>
