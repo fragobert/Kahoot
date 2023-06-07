@@ -37,9 +37,9 @@ public class GUI extends Application {
 
                 FXMLLoader trueFalseWindowLoader = new FXMLLoader(getClass().getResource("true_false_window.fxml"));
                 questionPane = trueFalseWindowLoader.load();
-                Scene scene = new Scene(questionPane, 600, 400);
+                Scene scene = new Scene(questionPane, 1600, 900);
                 primaryStage.setScene(scene);
-                primaryStage.setFullScreen(true);
+                primaryStage.setFullScreen(false);
 
                 Button trueButton = (Button) questionPane.lookup("#trueButton");
                 Button falseButton = (Button) questionPane.lookup("#falseButton");
@@ -74,8 +74,8 @@ public class GUI extends Application {
 
                 FXMLLoader questionWindowLoader = new FXMLLoader(getClass().getResource("question_window.fxml"));
                 questionPane = questionWindowLoader.load();
-                Scene scene = new Scene(questionPane, 600, 400);
-                stage.setFullScreen(true);
+                Scene scene = new Scene(questionPane, 1600, 900);
+                stage.setFullScreen(false);
                 stage.setTitle("Kayeet");
                 stage.setScene(scene);
 
@@ -143,9 +143,9 @@ public class GUI extends Application {
         try {
             FXMLLoader trueFalseAnswerWindowLoader = new FXMLLoader(getClass().getResource("true_false_window_answer.fxml"));
             answerPane = trueFalseAnswerWindowLoader.load();
-            Scene scene = new Scene(answerPane, 600, 400);
+            Scene scene = new Scene(answerPane, 1600, 900);
             primaryStage.setScene(scene);
-            primaryStage.setFullScreen(true);
+            primaryStage.setFullScreen(false);
 
             Text chosenAnswer1 = (Text) answerPane.lookup("#chosenAnswer1");
             Text chosenAnswer2 = (Text) answerPane.lookup("#chosenAnswer2");
@@ -175,9 +175,9 @@ public class GUI extends Application {
         try {
             FXMLLoader answerWindowLoader = new FXMLLoader(getClass().getResource("answer_window.fxml"));
             answerPane = answerWindowLoader.load();
-            Scene scene = new Scene(answerPane, 600, 400);
+            Scene scene = new Scene(answerPane, 1600, 900);
             primaryStage.setScene(scene);
-            primaryStage.setFullScreen(true);
+            primaryStage.setFullScreen(false);
 
             Text chosenAnswer1 = (Text) answerPane.lookup("#chosenAnswer1");
             Text chosenAnswer2 = (Text) answerPane.lookup("#chosenAnswer2");
@@ -242,7 +242,7 @@ public class GUI extends Application {
     }
 
     private void switchToNextQuestion() {
-        this.questionType = "trueFalse";
+        this.questionType = "";
     }
 
     public static void main(String[] args) {
