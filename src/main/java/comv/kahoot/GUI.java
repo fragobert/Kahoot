@@ -1,7 +1,6 @@
-package comv.kahoot.client;
+package comv.kahoot;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -14,7 +13,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.FormatterClosedException;
 import java.util.Optional;
 
 public class GUI extends Application {
@@ -244,7 +242,7 @@ public class GUI extends Application {
     }
 
     private void switchToNextQuestion() {
-        this.questionType = "";
+        this.questionType = "trueFalse";
     }
 
     public static void main(String[] args) {

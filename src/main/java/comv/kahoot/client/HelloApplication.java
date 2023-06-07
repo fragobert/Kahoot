@@ -28,8 +28,8 @@ public class HelloApplication extends Application {
 
         primaryStage = stage;
 
-        FXMLLoader question_window = new FXMLLoader(getClass().getResource("question_window.fxml"));
-        FXMLLoader answer_window = new FXMLLoader(getClass().getResource("answer_window.fxml"));
+        FXMLLoader question_window = new FXMLLoader(getClass().getResource("../../../../resources/comv/kahoot/question_window.fxml"));
+        FXMLLoader answer_window = new FXMLLoader(getClass().getResource("../../../../resources/comv/kahoot/answer_window.fxml"));
         Pane pane = question_window.load();
         Scene scene = new Scene(pane, 600, 400);
         stage.setFullScreen(true);
@@ -61,7 +61,7 @@ public class HelloApplication extends Application {
         try {
             if (answerWindow == null) {
                 answerWindow = new Stage();
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("answer_window.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../../../resources/comv/kahoot/answer_window.fxml"));
                 Pane pane = fxmlLoader.load();
                 Scene scene = new Scene(pane, 600, 400);
                 answerWindow.setScene(scene);
