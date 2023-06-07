@@ -7,7 +7,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="768" maxWidth="1366" minHeight="768" minWidth="1366" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="768" maxWidth="1366" minHeight="768" minWidth="1366" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TextArea fx:id="textArea" layoutX="61.0" layoutY="53.0" prefHeight="262.0" prefWidth="1251.0" text="Question">
          <font>
@@ -82,10 +82,10 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Text fx:id="chosenAnswer1" layoutX="584.0" layoutY="437.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔘" visible="false" />
-      <Text fx:id="chosenAnswer3" layoutX="584.0" layoutY="620.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔘" visible="false" />
-      <Text fx:id="chosenAnswer2" layoutX="1241.0" layoutY="437.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔘" visible="false" />
-      <Text fx:id="chosenAnswer4" layoutX="1241.0" layoutY="620.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔘" visible="false" />
+      <Text fx:id="chosenAnswer1" layoutX="584.0" layoutY="437.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⃝" visible="false" />
+      <Text fx:id="chosenAnswer3" layoutX="584.0" layoutY="620.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⃝" visible="false" />
+      <Text fx:id="chosenAnswer2" layoutX="1241.0" layoutY="437.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⃝" visible="false" />
+      <Text fx:id="chosenAnswer4" layoutX="1241.0" layoutY="620.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⃝" visible="false" />
       <Button fx:id="submitButton" layoutX="587.0" layoutY="713.0" minHeight="40.0" minWidth="50.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="200.0" text="Submit">
          <font>
             <Font size="18.0" />

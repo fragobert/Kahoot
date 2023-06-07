@@ -31,7 +31,7 @@ public class GUI extends Application {
 
         boolean[] correctAnswers = {true, false, false, true};
 
-        switch(questionType) {
+        switch (questionType) {
             case "trueFalse" -> {
                 primaryStage = stage;
 
@@ -153,17 +153,17 @@ public class GUI extends Application {
             Text correctAnswer1 = (Text) answerPane.lookup("#correctAnswer1");
             Text correctAnswer2 = (Text) answerPane.lookup("#correctAnswer2");
 
-            if(selectedButton[0]) {
+            if (selectedButton[0]) {
                 chosenAnswer1.setVisible(true);
             }
-            if(selectedButton[1]) {
+            if (selectedButton[1]) {
                 chosenAnswer2.setVisible(true);
             }
 
-            if(correctAnswers[0]) {
+            if (correctAnswers[0]) {
                 correctAnswer1.setVisible(true);
             }
-            if(correctAnswers[1]) {
+            if (correctAnswers[1]) {
                 correctAnswer2.setVisible(true);
             }
         } catch (IOException e) {
@@ -190,29 +190,37 @@ public class GUI extends Application {
             Text correctAnswer4 = (Text) answerPane.lookup("#correctAnswer4");
 
 
-            if(selectedButton[0]) {
+            if (selectedButton[0]) {
                 chosenAnswer1.setVisible(true);
+            } else {
+                chosenAnswer1.setVisible(false);
             }
-            if(selectedButton[1]) {
+            if (selectedButton[1]) {
                 chosenAnswer2.setVisible(true);
+            } else {
+                chosenAnswer2.setVisible(false);
             }
-            if(selectedButton[2]) {
+            if (selectedButton[2]) {
                 chosenAnswer3.setVisible(true);
+            } else {
+                chosenAnswer3.setVisible(false);
             }
-            if(selectedButton[3]) {
+            if (selectedButton[3]) {
                 chosenAnswer4.setVisible(true);
+            } else {
+                chosenAnswer4.setVisible(false);
             }
 
-            if(correctAnswers[0]) {
+            if (correctAnswers[0]) {
                 correctAnswer1.setVisible(true);
             }
-            if(correctAnswers[1]) {
+            if (correctAnswers[1]) {
                 correctAnswer2.setVisible(true);
             }
-            if(correctAnswers[2]) {
+            if (correctAnswers[2]) {
                 correctAnswer3.setVisible(true);
             }
-            if(correctAnswers[3]) {
+            if (correctAnswers[3]) {
                 correctAnswer4.setVisible(true);
             }
 

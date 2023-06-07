@@ -6,7 +6,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="768" maxWidth="1366" minHeight="768" minWidth="1366" prefHeight="768" prefWidth="1366" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="768" maxWidth="1366" minHeight="768" minWidth="1366" prefHeight="768" prefWidth="1366" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TextArea fx:id="textArea" layoutX="60.0" layoutY="53.0" prefHeight="400.0" prefWidth="1244.0" text="Question">
          <font>
@@ -52,7 +52,7 @@
 
       <Text fx:id="correctAnswer1" layoutX="134.0" layoutY="614.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="✓" visible="false" />
       <Text fx:id="correctAnswer2" layoutX="782.0" layoutY="614.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="✓" visible="false" />
-      <Text fx:id="chosenAnswer2" layoutX="1222.0" layoutY="614.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔘" visible="false" />
-      <Text fx:id="chosenAnswer1" layoutX="568.0" layoutY="614.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="🔘" visible="false" />
+      <Text fx:id="chosenAnswer2" layoutX="1222.0" layoutY="614.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⃝" visible="false" />
+      <Text fx:id="chosenAnswer1" layoutX="568.0" layoutY="614.0" scaleX="7.0" scaleY="7.0" strokeType="OUTSIDE" strokeWidth="0.0" text="⃝" visible="false" />
    </children>
 </Pane>
