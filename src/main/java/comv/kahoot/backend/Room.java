@@ -78,7 +78,10 @@ public class Room {
         Server.log("Sent package: " + packet);
     }
 
-    protected void join(Socket userSocket, DataOutputStream writer, DataInputStream receiver, String username) throws IOException {
+    protected void join(Socket userSocket, DataOutputStream writer, DataInputStream receiver, String username) throws IOException, IllegalStateException {
+        if(!state.equals(RoomState.NOT_READY))
+            throw new IllegalStateException();
+
         User user = new User(username, 0, 0);
         userSockets.put(user, userSocket);
 
@@ -88,28 +91,15 @@ public class Room {
         writers.add(writer);
     }
 
-    protected void start() throws InterruptedException {
+    protected void start() throws InterruptedException, IOException {
         boolean roomFinished = false;
 
         while(!roomFinished) {
             switch (state) {
                 case NOT_READY:
-                    for(Thread listener : listeners){
-                        listener.start();
-                    }
-                    for(Thread listener : listeners){
-                        listener.join();
-                    }
-
-                    for(String msg : received.values()){
-                        if(!msg.equals("r")){
-                            // Shit's not implemented
-                            return;
-                        }
-                    }
-
+                    // Scans until host says ready
+                    while(!hostReceiver.readUTF().equals("r"));
                     state = RoomState.RUNNING;
-                    break;
 
                 case RUNNING:
                     Quiz quiz = Quiz.loadQuiz();
