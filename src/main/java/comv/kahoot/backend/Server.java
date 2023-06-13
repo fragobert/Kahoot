@@ -201,6 +201,8 @@ public class Server {
 
                             room.join(userSocket, sender, receiver, username);
                             sender.writeUTF("esuccess");
+                            threads.remove(Thread.currentThread());
+                            Thread.currentThread().interrupt();
                             return;
 
                         default:

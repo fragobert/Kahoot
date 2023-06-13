@@ -1,12 +1,15 @@
 package comv.kahoot.backend;
 
 import comv.kahoot.User;
+import comv.kahoot.quiz.Question;
 import comv.kahoot.quiz.Quiz;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -17,9 +20,9 @@ public class Room {
 
     // User attributes
     private final Map<User, Socket> userSockets = new HashMap<>();
-    private final Map<User, String> received = new HashMap<>();
-    private final Set<Thread> listeners = new HashSet<>();
-    private final Set<DataOutputStream> writers = new HashSet<>();
+    private final Map<User, String> receivedFromListeners = new HashMap<>();
+    private final Set<Thread> userListeners = new HashSet<>();
+    private final Set<DataOutputStream> userWriters = new HashSet<>();
 
     private final Socket hostSocket;
     private final DataInputStream hostReceiver;
@@ -44,8 +47,8 @@ public class Room {
 
         User host = new User(username, 0,0);
         userSockets.put(host, hostSocket);
-        listeners.add(new Thread(new ListeningThread(hostReceiver, host)));
-        writers.add(hostSender);
+        userListeners.add(new Thread(new ListeningThread(hostReceiver, host)));
+        userWriters.add(hostSender);
 
         runningRooms.put(id, this);
 
@@ -83,15 +86,18 @@ public class Room {
             throw new IllegalStateException();
 
         User user = new User(username, 0, 0);
-        userSockets.put(user, userSocket);
 
         Thread listener = new Thread(new ListeningThread(receiver, user));
         Server.threads.add(listener);
-        listeners.add(listener);
-        writers.add(writer);
+        userSockets.put(user, userSocket);
+        userListeners.add(listener);
+        userWriters.add(writer);
     }
 
     protected void start() throws InterruptedException, IOException {
+        for(User user : userSockets.keySet())
+            receivedFromListeners.put(user, "");
+
         boolean roomFinished = false;
 
         while(!roomFinished) {
@@ -102,7 +108,68 @@ public class Room {
                     state = RoomState.RUNNING;
 
                 case RUNNING:
-                    Quiz quiz = Quiz.loadQuiz();
+                    Quiz quiz = new Quiz("Cool quiz", new ArrayList<Question>(){{
+                        this.add(new Question("What is the capital of France?", new String[]{"Paris", "London", "Berlin", "Madrid"}, 30, new int[4]));
+                    }});
+
+                    for(Question question : quiz.getQuestions()) {
+                        String msg1 = "q" + question.getQuestion() + ";" + String.join(";", question.getAnswers());
+                        sendToAllUsers(msg1);
+
+                        LocalDateTime now = LocalDateTime.now();
+                        for(Thread listener : userListeners)
+                            listener.start();
+
+                        int answered = 0;
+
+                        while(answered < userSockets.size()){
+
+                            for(Map.Entry<User, String> received : receivedFromListeners.entrySet()){
+                                String msg2 = received.getValue();   // The full string received from the user
+
+                                String userQuestion;
+                                String answersEncoded;
+
+                                try {
+                                    userQuestion = msg2.substring(1, msg2.indexOf(';'));   // The question the user sent (to check if he answered to the current and not the last question)
+                                    answersEncoded = msg2.substring(msg2.indexOf(';') + 1);    // The answers encoded in binary, ex: "0010"
+                                } catch (Exception e){
+                                    continue;
+                                }
+                                // Regex: a<some question>;<answersEncoded>
+                                if(msg2.matches("^a[^;]*;\\d{4}$") && userQuestion.equals(question.getQuestion())) {
+                                    calculateAndSetScore(now, received.getKey(), question, answersEncoded);
+                                    answered++;
+                                }
+                            }
+                        }
+
+                        Server.log("All users answered");
+
+                        for(Thread listener : userListeners){
+                            listener.join();
+                        }
+
+                        StringBuilder correctAnswers = new StringBuilder();
+                        for(int i = 0; i < question.getAnswers().length; i++)
+                            correctAnswers.append('0');
+
+                        for(int answerEncoded : question.getIndex())
+                            correctAnswers.setCharAt(answerEncoded, '1');
+
+                        sendToAllUsers("c" + correctAnswers.toString());
+                        synchronized (this) {
+                            wait(1000);
+                        }
+
+                        sendToAllUsers(sortedUsersAsProtocol());
+
+                        while(!hostReceiver.readUTF().equals("r"));
+                    }
+
+                    sendToAllUsers("f");
+                    roomFinished = true;
+                    break;
             }
         }
 
@@ -113,9 +180,47 @@ public class Room {
         return runningRooms.get(id);
     }
 
+    private void sendToAllUsers(String msg) throws IOException {
+        for(DataOutputStream writer : userWriters)
+            writer.writeUTF(msg);
+        Server.log("Sent package: " + msg);
+    }
+
     protected static void checkUsername(String username) throws IllegalArgumentException {
         if(username.length() < 5 || username.length() > 20 || username.contains(";"))
             throw new IllegalArgumentException("h00000");
+    }
+
+    private void calculateAndSetScore(LocalDateTime startTime, User user, Question question, String answersEncoded) {
+        Duration duration = Duration.between(startTime, LocalDateTime.now());
+
+        ArrayList<Integer> answersList = new ArrayList<>();
+        for(int i = 0; i < answersEncoded.length(); i++)
+            if(answersEncoded.charAt(i) == '1')
+                answersList.add(i);
+
+        Integer[] answers = new Integer[answersList.size()];
+        answersList.toArray(answers);
+
+        // One correct answer
+        if(question.getIndex().length == 1) {
+            user.setScore(user.getScore() + (int)(1000 * (1 - ((duration.getSeconds() / question.getMaxSeconds()) / 2))));
+        // Multiple answers
+        }else{
+            user.setScore(user.getScore() + (int)((500 * question.getIndex().length) * (1 - (((double)duration.getSeconds() / question.getMaxSeconds()) / 2))));
+        }
+    }
+
+    private String sortedUsersAsProtocol(){
+        List<User> sortedUsers = new ArrayList<>(userSockets.keySet());
+        sortedUsers.sort((user1, user2) -> Integer.compare(user2.getScore(), user1.getScore()));
+
+        StringBuilder result = new StringBuilder("p");
+        for(User user : userSockets.keySet())
+            result.append(user.getUsername() + ";" + user.getScore() + ";");
+        result.deleteCharAt(result.lastIndexOf(";"));
+
+        return result.toString();
     }
 
     private class ListeningThread implements Runnable {
@@ -129,7 +234,7 @@ public class Room {
 
         public void run() {
             try {
-                received.put(user, listener.readUTF());
+                receivedFromListeners.put(user, listener.readUTF());
             } catch (IOException connectionLost) {
                 Thread.currentThread().interrupt();
             }

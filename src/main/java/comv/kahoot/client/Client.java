@@ -24,19 +24,19 @@ public class Client {
             String username = readUsername();
             char option = readOption();
 
-            switch(option) {
-                case 'h':
+            switch (option) {
+                case 'h' -> {
                     out.writeUTF("h" + username);
-                    break;
-                case 'j':
+                }
+                case 'j' -> {
                     String roomNumber = readRoomNumber();
                     out.writeUTF("j" + roomNumber + username);
-                    break;
-                default: System.out.println("Wrong Input"); break;
+                }
+                default -> System.out.println("Wrong Input");
             }
 
 
-            Thread messageReaderThread = new Thread(() -> readServerResponse(in));
+            Thread messageReaderThread = new Thread(() -> readServerResponses(in, out, option));
             messageReaderThread.start();
 
             String userInput;
@@ -54,6 +54,87 @@ public class Client {
             System.err.println("Server probably isn't running on " + IP_ADDRESS);
             System.exit(1);
         }
+    }
+
+
+    /**
+     * Reads and displays server responses.
+     *
+     * @param in the reader to read server responses from
+     */
+    private void readServerResponses(DataInputStream in, DataOutputStream out, char userType) {
+        try {
+            String roomId = "";
+            String serverResponse = in.readUTF();
+
+            if(userType == 'h'){
+                System.out.println("Room number: " + serverResponse.substring(1));
+                serverResponse = "esuccess";
+                System.out.println("Press [Enter] to start");
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                reader.readLine();
+                out.writeUTF("r");
+            }
+
+            if (serverResponse.startsWith("h0000")) { //TODO: ROOM NUMBER CAN BE 0000
+                switch (serverResponse) {
+                    case "h00000" -> System.err.println("Invalid username");
+                    case "h00001" -> System.err.println("Too many rooms running");
+                    case "h00002" -> System.err.println("Room already started");
+                    case "h00009" -> System.err.println("Unknown Error");
+                }
+            } else if (serverResponse.startsWith("efailure")) {
+                System.err.println("Error");
+            } else if (serverResponse.startsWith("esuccess")) {
+                String received = null;
+                String state = "q";
+                while (!(received = in.readUTF()).equals("f")) {
+                    switch (state) {
+                        case "q" -> {
+                            out.writeUTF(readQuestion(received));
+                            state = "c";
+                        }
+                        case "c" -> {
+                            //TODO: VISUELL RICHTIGE ANTWORTEN DARSTELLEN
+                            System.out.println(received);
+                            state = "p";
+                        }
+                        case "p" -> {
+                            //TODO: VISUELL RICHTIGE ANTWORTEN DARSTELLEN
+                            System.out.println(received);
+                            state = "q";
+                        }
+                    }
+                }
+                System.out.println("Room ended");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading server response: " + e.getMessage());
+        }
+    }
+
+    private String readQuestion(String received) throws IOException {
+        String[] qAndA = received.split(";");
+        qAndA[0] = qAndA[0].substring(1);
+
+        System.out.println("Question: " + qAndA[0]);
+
+        for (int i = 1; i < qAndA.length; i++) {
+            System.out.println("Answer " + i + ": " + qAndA[i]);
+        }
+
+        BufferedReader answerScanner = new BufferedReader(new InputStreamReader(System.in));
+
+        String answers = answerScanner.readLine();
+
+        StringBuilder sb = new StringBuilder("a");
+        sb.append(qAndA[0]);
+        sb.append(";0101");
+        // Regex: a<some question>;<answersEncoded>
+        System.out.println(sb.toString());
+        return sb.toString();
+
     }
 
 
@@ -116,10 +197,7 @@ public class Client {
      * @return true if the option is valid, false otherwise
      */
     private boolean validateOption(char option) {
-        if(option == 'j' || option == 'h') {
-            return true;
-        }
-        return false;
+        return option == 'j' || option == 'h';
     }
 
 
@@ -146,23 +224,7 @@ public class Client {
      * @return true if the option is valid, false otherwise
      */
     private boolean validateRoomNumber(String roomNumber) {
-        if(roomNumber.length() == 4 && !roomNumber.equals("0000")) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Reads and displays server responses.
-     *
-     * @param in the reader to read server responses from
-     */
-    private void readServerResponse(DataInputStream in) {
-        try {
-            System.out.println(in.readUTF().substring(1));
-        } catch (IOException e) {
-            System.err.println("Error reading server response: " + e.getMessage());
-        }
+        return roomNumber.length() == 4 && !roomNumber.equals("0000");
     }
 
     /**
